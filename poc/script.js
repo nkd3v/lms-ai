@@ -60,10 +60,21 @@ video.addEventListener("play", async () => {
 
     canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
 
+
+
+    detectLabel = document.getElementById('detector-label');
+
     const results = resizedDetections.map((d) => {
       return faceMatcher.findBestMatch(d.descriptor);
     });
+    if (results.length != 0) {
+      console.log(`detect ${results[0].label}`)
+      detectLabel.innerText = results[0].label
+    } else {
+      detectLabel.innerText = ''
+    }
     results.forEach((result, i) => {
+      console.log(result.label)
       const box = resizedDetections[i].detection.box;
       const drawBox = new faceapi.draw.DrawBox(box, {
         label: result,

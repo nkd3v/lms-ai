@@ -60,9 +60,9 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: 'Sample Page',
+    title: 'Course Page',
     icon: IconAperture,
-    href: '/sample-page',
+    href: '/course',
   },
 ];
 
