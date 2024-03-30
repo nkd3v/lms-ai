@@ -1,82 +1,45 @@
 "use strict";
 // @ts-nocheck
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-const { Pool } = require('pg');
-require('dotenv').config();
-let { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env;
-const pool = new Pool({
-    host: PGHOST,
-    database: PGDATABASE,
-    username: PGUSER,
-    password: PGPASSWORD,
-    port: 5432,
-    ssl: {
-        require: true,
-    },
-});
-function getPgVersion() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const client = yield pool.connect();
-        try {
-            const result = yield client.query('SELECT version()');
-            console.log(result.rows[0]);
-        }
-        finally {
-            client.release();
-        }
-    });
-}
-getPgVersion();
-const express = require('express');
+Object.defineProperty(exports, "__esModule", { value: true });
+require("./config/database");
+const express_1 = __importDefault(require("express"));
 var path = require('path');
-const app = express();
-const session = require('express-session');
+const express_session_1 = __importDefault(require("express-session"));
+const authRouter_1 = require("./routes/authRouter");
+const passport_google_oauth_1 = require("passport-google-oauth");
+const passport_1 = __importDefault(require("passport"));
+const jwtAuth_1 = require("./middleware/jwtAuth");
+require('dotenv').config();
+const app = (0, express_1.default)();
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-app.use(session({
+app.use((0, express_session_1.default)({
     resave: false,
     saveUninitialized: true,
-    secret: 'IWwUC-67jxRApjK40V4NKXFgb4djMSjhrmrozQrjF-4'
+    secret: process.env.SESSION_SECRET
 }));
 app.get('/', function (req, res) {
     res.render('pages/auth');
 });
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 app.listen(port, () => console.log('App listening on port ' + port));
-const passport = require('passport');
 var userProfile;
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport_1.default.initialize());
+app.use(passport_1.default.session());
 app.set('view engine', 'ejs');
-app.get('/success', (req, res) => res.send(userProfile));
+app.get('/success', (req, res) => { (0, jwtAuth_1.jwtAuth)(); res.render('success', { user: req.user }); });
 app.get('/error', (req, res) => res.send("error logging in"));
-passport.serializeUser(function (user, cb) {
-    cb(null, user);
-});
-passport.deserializeUser(function (obj, cb) {
-    cb(null, obj);
-});
-const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-const GOOGLE_CLIENT_ID = '433744077393-62d5uchgmdaf2u0b220q84iuinvjd171.apps.googleusercontent.com';
-const GOOGLE_CLIENT_SECRET = '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';
-passport.use(new GoogleStrategy({
-    clientID: GOOGLE_CLIENT_ID,
-    clientSecret: GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/auth/google/callback"
+passport_1.default.serializeUser((user, cb) => cb(null, user));
+passport_1.default.deserializeUser((obj, cb) => cb(null, obj));
+passport_1.default.use(new passport_google_oauth_1.OAuth2Strategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "/auth/google/callback"
 }, function (accessToken, refreshToken, profile, done) {
     userProfile = profile;
     return done(null, userProfile);
 }));
-app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/error' }), function (req, res) {
-    // Successful authentication, redirect success.
-    res.redirect('/success');
-});
+app.use('/auth', authRouter_1.authRouter);
