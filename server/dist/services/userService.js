@@ -31,9 +31,9 @@ exports.getUserByEmail = getUserByEmail;
 function insertUser(newUser) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const { username, email } = newUser;
-            const query = 'INSERT INTO users (username, email) VALUES ($1, $2) RETURNING *';
-            const result = yield database_1.default.query(query, [username, email]);
+            const { id, email, name, given_name, family_name, picture_url } = newUser;
+            const query = 'INSERT INTO users (id, email, name, given_name, family_name, picture_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
+            const result = yield database_1.default.query(query, [id, email, name, given_name, family_name, picture_url]);
             return result.rows[0];
         }
         catch (error) {

@@ -11,7 +11,7 @@ export function useGoogleStrategy(){
         {
             clientID: process.env.GOOGLE_CLIENT_ID || '',
             clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
-            callbackURL: '/my-app/v1/auth/google/callback',
+            callbackURL: '/auth/google/callback',
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
@@ -22,9 +22,14 @@ export function useGoogleStrategy(){
                 if (user) { 
                     done(null, user);
                 } else { 
+                    console.log(profile)
                     const newUser: User = {
-                        username: profile._json.name,
+                        id: profile._json.sub,
                         email: profile._json.email,
+                        name: profile._json.name,
+                        given_name: profile._json.given_name,
+                        family_name: profile._json.family_name,
+                        picture_url: profile._json.picture,
                     }
                     user = await insertUser(newUser)
                     done(null, user);
