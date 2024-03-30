@@ -77,10 +77,10 @@ function BasicModal({ open, setOpen, handleClose, videoRef }) {
                 <Box sx={style} borderRadius={4}>
                     <video ref={videoRef} style={{ borderTopLeftRadius: 16, borderTopRightRadius: 16 }}></video>
                     <Typography id="modal-modal-title" variant="h6" component="h2" mt={1} textAlign={'center'}>
-                        Passed
+                        Verifying
                     </Typography>
                     <Box display={'flex'} justifyContent={'center'} my={1.5}>
-                        <Button variant='contained'>Start Exam</Button>
+                        <Button disabled variant='contained'>Start Exam</Button>
                     </Box>
                 </Box>
             </Modal>

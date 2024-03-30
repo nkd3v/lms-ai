@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, AppBar, Toolbar, styled, Stack, IconButton, Badge, Button } from '@mui/material';
+import { Box, AppBar, Toolbar, styled, Stack, IconButton, Badge, Button, Chip } from '@mui/material';
 import PropTypes from 'prop-types';
 
 // components
@@ -62,6 +62,8 @@ const Header = (props) => {
 
         </IconButton>
         <Box flexGrow={1} />
+        <Chip style={{marginRight: '10px'}} label="Tab switch detected" />
+        <Chip style={{marginRight: '10px'}} label="Time left: 29 mins 20 secs" variant="outlined" />
         <Stack spacing={1} direction="row" alignItems="center">
           <Profile />
         </Stack>

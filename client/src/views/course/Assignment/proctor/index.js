@@ -23,7 +23,7 @@ const columns = [
 
 const rows = [
     { id: 1, violationType: 'Switched to differrent application for 30 seconds', occuredAt: '7:00:13 AM', evidence: '/img/demo1.png' },
-    { id: 2, violationType: 'Non test taker detected 10 seconds', occuredAt: '7:01:13 AM', evidence: '/img/demo2.png' },
+    { id: 2, violationType: 'No face detected 10 seconds', occuredAt: '7:01:13 AM', evidence: '/img/demo2.png' },
 ];
 
 const index = () => {

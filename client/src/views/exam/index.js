@@ -2,31 +2,6 @@ import React, { useEffect } from 'react';
 import { Box, Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Typography } from '@mui/material';
 
 const Exam = () => {
-  useEffect(() => {
-    const script = document.createElement('script');
-
-    script.src = '/face-api.min.js';
-    script.async = true;
-
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    }
-  }, ['/face-api.min.js']);
-
-  useEffect(() => {
-    const script = document.createElement('script');
-
-    script.src = '/script.js';
-    script.async = true;
-
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    }
-  }, ['/script.js']);
 
   const questions = [
     {
@@ -74,7 +49,7 @@ const Exam = () => {
 
   return (
     <>
-    <video id="video" width="220" height="160" autoPlay></video>
+    {/* <video id="video" width="220" height="160" autoPlay></video> */}
       <Typography variant='h2'>
         Exam 1
       </Typography>

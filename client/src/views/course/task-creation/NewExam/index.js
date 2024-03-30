@@ -1,6 +1,18 @@
+import { TimePicker } from '@mui/x-date-pickers/TimePicker'
+import dayjs from 'dayjs';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { Box, Button, TextField, Typography } from '@mui/material'
 import React from 'react'
 import { Link } from 'react-router-dom'
+
+function BasicTimePicker() {
+  return (
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <TimePicker label="Basic time picker" />
+    </LocalizationProvider>
+  );
+}
 
 const NewExam = () => {
   return (
@@ -9,12 +21,15 @@ const NewExam = () => {
         Exam
       </Typography>
       <div>
+      <BasicTimePicker />
+      </div>
+      <div>
         <TextField
           required
           id="filled-search"
           label="Title"
           variant="filled"
-          fullWidth 
+          fullWidth
         />
       </div>
       <div>
@@ -24,7 +39,7 @@ const NewExam = () => {
           multiline
           rows={4}
           variant="filled"
-          fullWidth 
+          fullWidth
           sx={{ mt: 2 }}
         />
       </div>
