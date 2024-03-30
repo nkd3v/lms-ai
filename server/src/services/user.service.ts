@@ -14,9 +14,9 @@ export async function getUserByEmail(email: string): Promise<User | null> {
 
 export async function insertUser(newUser: User): Promise<User> {
   try {
-    const { id, email, name, given_name, family_name, picture_url } = newUser;
-    const query = 'INSERT INTO users (id, email, name, given_name, family_name, picture_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
-    const result = await pool.query(query, [id, email, name, given_name, family_name, picture_url]);
+    const { email, name, given_name, family_name, picture_url } = newUser;
+    const query = 'INSERT INTO users (email, name, given_name, family_name, picture_url) VALUES ($1, $2, $3, $4, $5) RETURNING *';
+    const result = await pool.query(query, [email, name, given_name, family_name, picture_url]);
     return result.rows[0];
   } catch (error) {
     console.error('Error inserting user:', error);
