@@ -19,7 +19,7 @@ authRouter.get(
       { expiresIn: "1h" },
     );
     res.cookie('jwtToken', token);
-    res.redirect("http://localhost:3000/success")
+    res.redirect("http://localhost:5173")
   }
 );
 
@@ -28,7 +28,8 @@ authRouter.get(
   (req: Request, res: Response, next: NextFunction) => {
     req.logout(function (err) {
       if (err) return next(err);
-      res.redirect('/');
+      res.clearCookie("jwtToken");
+      res.redirect('http://localhost:5173');
     });
   }
 );

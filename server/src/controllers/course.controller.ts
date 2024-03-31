@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import { getAllCourses, getCoursesByInstructor, getCoursesByLearner, getCourseByJoinCode, listUsersByCourse, createCourse, addUserToCourse } from '../services/course.service';
 
 export async function getCoursesByInstructorHandler(req: Request, res: Response): Promise<void> {
-  const userId = req.params.userId;
+  // @ts-ignore
+  const userId = req.params.userId ?? req.user.id;
   try {
     const courses = await getCoursesByInstructor(parseInt(userId));
     res.status(200).json(courses);
@@ -12,7 +13,8 @@ export async function getCoursesByInstructorHandler(req: Request, res: Response)
 }
 
 export async function getCoursesByLearnerHandler(req: Request, res: Response): Promise<void> {
-  const userId = req.params.userId;
+  // @ts-ignore
+  const userId = req.params.userId ?? req.user.id;
   try {
     const courses = await getCoursesByLearner(parseInt(userId));
     res.status(200).json(courses);

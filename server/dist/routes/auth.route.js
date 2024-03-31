@@ -12,12 +12,13 @@ exports.authRouter.get('/google', passport_1.default.authenticate('google', { sc
 exports.authRouter.get('/google/callback', passport_1.default.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
     const token = jsonwebtoken_1.default.sign({ user: req.user }, process.env.JWT_SECRET || '', { expiresIn: "1h" });
     res.cookie('jwtToken', token);
-    res.redirect("http://localhost:3000/success");
+    res.redirect("http://localhost:5173");
 });
 exports.authRouter.get('/logout', (req, res, next) => {
     req.logout(function (err) {
         if (err)
             return next(err);
-        res.redirect('/');
+        res.clearCookie("jwtToken");
+        res.redirect('http://localhost:5173');
     });
 });

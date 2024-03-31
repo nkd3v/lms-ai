@@ -1,13 +1,14 @@
 import { Box, Button, Divider, Grid, Paper, Stack, Typography } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
-import React from 'react'
+import React, { useEffect } from 'react'
 import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import Modal from '@mui/material/Modal';
-import { useState, useRef } from 'react'
+import { useState, useRef } from 'react';
+const faceapi = require('face-api.js');
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -65,7 +66,7 @@ const style = {
 
 
 
-function BasicModal({ open, setOpen, handleClose, videoRef }) {
+function BasicModal({ open, setOpen, handleClose, videoRef, status }) {
     return (
         <div>
             <Modal
@@ -75,12 +76,12 @@ function BasicModal({ open, setOpen, handleClose, videoRef }) {
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style} borderRadius={4}>
-                    <video ref={videoRef} style={{ borderTopLeftRadius: 16, borderTopRightRadius: 16 }}></video>
+                    <video id="vref" ref={videoRef} style={{ borderTopLeftRadius: 16, borderTopRightRadius: 16 }}></video>
                     <Typography id="modal-modal-title" variant="h6" component="h2" mt={1} textAlign={'center'}>
-                        Verifying
+                        {status}
                     </Typography>
                     <Box display={'flex'} justifyContent={'center'} my={1.5}>
-                        <Button disabled variant='contained'>Start Exam</Button>
+                        <Button href="/exam/1" disabled={status != "Passed"} variant='contained'>Start Exam</Button>
                     </Box>
                 </Box>
             </Modal>
@@ -91,6 +92,27 @@ function BasicModal({ open, setOpen, handleClose, videoRef }) {
 const Index = () => {
     const [open, setOpen] = useState(false);
     const videoRef = useRef(null);
+    const faceMatcher = useRef(null);
+    const intervalId = useRef(null);
+    const [status, setStatus] = useState('Initilizing');
+
+    useEffect(() => {
+        async function loadFace() {
+            await Promise.all([
+                faceapi.nets.ssdMobilenetv1.loadFromUri("/models"),
+                faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
+                faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
+            ]);
+            const img = await faceapi.fetchImage(`/labels/Nong/1.png`);
+            const detection = await faceapi
+                .detectSingleFace(img)
+                .withFaceLandmarks()
+                .withFaceDescriptor();
+
+            faceMatcher.current = new faceapi.FaceMatcher(new faceapi.LabeledFaceDescriptors('Nong', [detection.descriptor]));
+        }
+        loadFace();
+    }, [])
 
     const handleOpen = () => {
         setOpen(true)
@@ -105,8 +127,24 @@ const Index = () => {
             })
             .catch(error => {
                 console.error(error)
-            })
+            });
 
+        setStatus('Verifying')
+        intervalId.current = setInterval(async () => {
+            const results = await faceapi
+                .detectAllFaces(videoRef.current)
+                .withFaceLandmarks()
+                .withFaceDescriptors();
+
+            results.forEach(fd => {
+                const bestMatch = faceMatcher.current.findBestMatch(fd.descriptor)
+                console.log(bestMatch.toString())
+                if (status != 'Passed' && bestMatch.toString().startsWith('Nong')) {
+                    setStatus('Passed');
+                    clearInterval(intervalId.current);
+                }
+            })
+        })
     }
 
     const handleClose = () => {
@@ -115,10 +153,14 @@ const Index = () => {
             console.log('stop')
             track.stop();
         });
+
+        clearInterval(intervalId.current);
+        intervalId.current = null;
     }
+
     return (
         <>
-            <BasicModal open={open} setOpen={setOpen} handleClose={handleClose} videoRef={videoRef} />
+            <BasicModal open={open} setOpen={setOpen} handleClose={handleClose} videoRef={videoRef} status={status} />
             <Grid container spacing={3}>
                 <Grid item xs={8.5}>
                     <Typography variant='h3'>

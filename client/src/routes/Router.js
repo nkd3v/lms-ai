@@ -18,8 +18,8 @@ const Icons = Loadable(lazy(() => import('../views/icons/Icons')))
 const TypographyPage = Loadable(lazy(() => import('../views/utilities/TypographyPage')))
 const Shadow = Loadable(lazy(() => import('../views/utilities/Shadow')))
 const Error = Loadable(lazy(() => import('../views/authentication/Error')));
-const Register = Loadable(lazy(() => import('../views/authentication/Register')));
-const Login = Loadable(lazy(() => import('../views/authentication/Login')));
+// const Register = Loadable(lazy(() => import('../views/authentication/Register')));
+// const Login = Loadable(lazy(() => import('../views/authentication/Login')));
 
 const CoursePage = Loadable(lazy(() => import('../views/course')))
 
@@ -32,12 +32,12 @@ const Router = [
       { path: '/dashboard', exact: true, element: <Dashboard /> },
 
       { path: '/course', exact: true, element: <CoursePage /> },
-      { path: '/exam', exact: true, element: <Exam /> },
+      { path: '/exam/:examId', exact: true, element: <Exam /> },
       { path: '/course/new-assignment', exact: true, element: <NewAssignment /> },
       { path: '/course/new-exam', exact: true, element: <NewExam /> },
-      { path: '/course/assignment', exact: true, element: <Assignment /> },
-      { path: '/course/exam', exact: true, element: <ExamAssignment /> },
-      { path: '/course/assignment/proctor', exact: true, element: <Proctor /> },
+      { path: '/course/:courseId/assignment/:assignmentId', exact: true, element: <Assignment /> },
+      { path: '/course/:courseId/exam/:examId', exact: true, element: <ExamAssignment /> },
+      { path: '/course/:courseId/proctor/:proctorId', exact: true, element: <Proctor /> },
 
       { path: '/icons', exact: true, element: <Icons /> },
       { path: '/ui/typography', exact: true, element: <TypographyPage /> },
@@ -50,9 +50,9 @@ const Router = [
     element: <BlankLayout />,
     children: [
       { path: '404', element: <Error /> },
-      { path: '/auth/register', element: <Register /> },
-      { path: '/auth/login', element: <Login /> },
-      { path: '*', element: <Navigate to="/auth/404" /> },
+      // { path: '/auth/register', element: <Register /> },
+      // { path: '/auth/login', element: <Login /> },
+      { path: '*', element: <Error /> },
     ],
   },
 ];

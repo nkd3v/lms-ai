@@ -21,7 +21,7 @@ function useGoogleStrategy() {
     passport_1.default.use(new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: '/auth/google/callback',
+        callbackURL: '/api/v1/auth/google/callback',
     }, (accessToken, refreshToken, profile, done) => __awaiter(this, void 0, void 0, function* () {
         try {
             if (!profile._json.email)

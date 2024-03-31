@@ -13,7 +13,9 @@ exports.joinCourseByCode = exports.addUserToCourseHandler = exports.createCourse
 const course_service_1 = require("../services/course.service");
 function getCoursesByInstructorHandler(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const userId = req.params.userId;
+        var _a;
+        // @ts-ignore
+        const userId = (_a = req.params.userId) !== null && _a !== void 0 ? _a : req.user.id;
         try {
             const courses = yield (0, course_service_1.getCoursesByInstructor)(parseInt(userId));
             res.status(200).json(courses);
@@ -26,7 +28,9 @@ function getCoursesByInstructorHandler(req, res) {
 exports.getCoursesByInstructorHandler = getCoursesByInstructorHandler;
 function getCoursesByLearnerHandler(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const userId = req.params.userId;
+        var _a;
+        // @ts-ignore
+        const userId = (_a = req.params.userId) !== null && _a !== void 0 ? _a : req.user.id;
         try {
             const courses = yield (0, course_service_1.getCoursesByLearner)(parseInt(userId));
             res.status(200).json(courses);

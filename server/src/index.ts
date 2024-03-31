@@ -28,7 +28,7 @@ app.use(session({
 
 app.use(cors({
   origin: 'http://localhost:5173',
-  credentials: true // Allows sending cookies
+  credentials: true
 }));
 
 app.use(passport.initialize());
@@ -36,13 +36,15 @@ app.use(passport.session());
 
 useGoogleStrategy();
 
-app.use(indexRouter);
+app.use('/api/v1/uploads', express.static(__dirname + '/../uploads'));
+
+app.use('/api/v1/', indexRouter);
 
 app.get('/', function (req, res) {
   res.render('pages/auth');
 });
 
-app.get('/success', (req, res) => { jwtAuth(req); res.render('success', { user: req.user }) });
+app.get('/success', jwtAuth, (req, res) => { res.render('success', { user: req.user }) });
 app.get('/error', (req, res) => res.send("error logging in"));
 
 const port = process.env.PORT || 3000;

@@ -12,6 +12,6 @@ router.post('/', course_controller_1.createCourseHandler);
 router.post('/:courseId/add-user', course_controller_1.addUserToCourseHandler);
 router.get('/:courseId/users', course_controller_1.getUsersByCourse);
 router.post('/join-by-code', course_controller_1.joinCourseByCode);
-router.get('/instructor/:userId', course_controller_1.getCoursesByInstructorHandler);
-router.get('/learner/:userId', course_controller_1.getCoursesByLearnerHandler);
+router.get('/instructor/:userId?', course_controller_1.getCoursesByInstructorHandler);
+router.get('/learner/:userId?', course_controller_1.getCoursesByLearnerHandler);
 router.get('/', course_controller_1.getAllCoursesHandler);

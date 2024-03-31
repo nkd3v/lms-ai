@@ -27,16 +27,17 @@ app.use((0, express_session_1.default)({
 }));
 app.use((0, cors_1.default)({
     origin: 'http://localhost:5173',
-    credentials: true // Allows sending cookies
+    credentials: true
 }));
 app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
 (0, passport_config_1.useGoogleStrategy)();
-app.use(index_route_1.indexRouter);
+app.use('/api/v1/uploads', express_1.default.static(__dirname + '/../uploads'));
+app.use('/api/v1/', index_route_1.indexRouter);
 app.get('/', function (req, res) {
     res.render('pages/auth');
 });
-app.get('/success', (req, res) => { (0, jwtAuth_1.jwtAuth)(req); res.render('success', { user: req.user }); });
+app.get('/success', jwtAuth_1.jwtAuth, (req, res) => { res.render('success', { user: req.user }); });
 app.get('/error', (req, res) => res.send("error logging in"));
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log('App listening on port ' + port));
