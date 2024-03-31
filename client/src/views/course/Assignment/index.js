@@ -10,6 +10,12 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
+const names = [
+  { id: "66010001", name: "Johnny Depp" },
+  { id: "66010002", name: "Leonardo DiCaprio" },
+  { id: "66010003", name: "Tom Hanks" },
+];
+
 function CheckboxesTags() {
   return (
     <Autocomplete
@@ -35,20 +41,6 @@ function CheckboxesTags() {
     />
   );
 }
-
-const names = [
-  { id: "66010001", name: "Johnny Depp" },
-  { id: "66010002", name: "Leonardo DiCaprio" },
-  { id: "66010003", name: "Tom Hanks" },
-  { id: "66010004", name: "Meryl Streep" },
-  { id: "66010005", name: "Brad Pitt" },
-  { id: "66010006", name: "Angelina Jolie" },
-  { id: "66010007", name: "Jennifer Lawrence" },
-  { id: "66010008", name: "Robert Downey Jr." },
-  { id: "66010009", name: "Scarlett Johansson" },
-  { id: "66010010", name: "Denzel Washington" }
-];
-
 
 const Assignment = () => {
   return (

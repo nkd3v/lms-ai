@@ -13,10 +13,10 @@ const CourseStream = () => {
     <Grid container spacing={2}>
 
       <Grid item xs={12} display={"flex"} justifyContent={"flex-end"}>
-        <Link to='/course/new-exam' style={{ textDecoration: 'none' }}>
+        <Link to='/course/1/new-exam' style={{ textDecoration: 'none' }}>
           <Button variant="contained" sx={{ mr: 1 }}>Create Exam</Button>
         </Link>
-        <Link to='/course/new-assignment' style={{ textDecoration: 'none' }}>
+        <Link to='/course/1/new-assignment' style={{ textDecoration: 'none' }}>
           <Button variant="contained">Create Assignment</Button>
         </Link>
       </Grid>
@@ -38,14 +38,14 @@ const CourseStream = () => {
         <Grid container spacing={2}>
 
           <Grid item xs={12}>
-            <Link to='/course/assignment' style={{ textDecoration: 'none' }}>
+            <Link to='/course/1/exam/1' style={{ textDecoration: 'none' }}>
               <ExamCard>
               </ExamCard>
             </Link>
           </Grid>
 
           <Grid item xs={12}>
-            <Link to='/course/assignment' style={{ textDecoration: 'none' }}>
+            <Link to='/course/1/assignment/1' style={{ textDecoration: 'none' }}>
               <PostCard>
               </PostCard>
             </Link>

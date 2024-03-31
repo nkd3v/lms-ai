@@ -31,10 +31,10 @@ const Router = [
       { path: '/', element: <Navigate to="/dashboard" /> },
       { path: '/dashboard', exact: true, element: <Dashboard /> },
 
-      { path: '/course', exact: true, element: <CoursePage /> },
+      { path: '/course/:courseId', exact: true, element: <CoursePage /> },
       { path: '/exam/:examId', exact: true, element: <Exam /> },
-      { path: '/course/new-assignment', exact: true, element: <NewAssignment /> },
-      { path: '/course/new-exam', exact: true, element: <NewExam /> },
+      { path: '/course/:courseId/new-assignment', exact: true, element: <NewAssignment /> },
+      { path: '/course/:courseId/new-exam', exact: true, element: <NewExam /> },
       { path: '/course/:courseId/assignment/:assignmentId', exact: true, element: <Assignment /> },
       { path: '/course/:courseId/exam/:examId', exact: true, element: <ExamAssignment /> },
       { path: '/proctor/:examId/user/:userId', exact: true, element: <Proctor /> },

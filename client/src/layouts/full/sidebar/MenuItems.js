@@ -27,29 +27,13 @@ const Menuitems = [
     id: uniqueId(),
     title: 'Web Development',
     icon: IconTypography,
-    href: '/c/web-development',
+    href: '/course/1',
   },
   {
     id: uniqueId(),
     title: 'FPGA',
     icon: IconCopy,
     href: '/c/fpga',
-  },
-  {
-    navlabel: true,
-    subheader: 'Extra',
-  },
-  {
-    id: uniqueId(),
-    title: 'Settings',
-    icon: IconMoodHappy,
-    href: '/settings',
-  },
-  {
-    id: uniqueId(),
-    title: 'Course Page',
-    icon: IconAperture,
-    href: '/course',
   },
 ];
 
