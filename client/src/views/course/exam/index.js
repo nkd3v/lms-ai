@@ -94,7 +94,7 @@ const Index = () => {
     const videoRef = useRef(null);
     const faceMatcher = useRef(null);
     const intervalId = useRef(null);
-    const [status, setStatus] = useState('Initilizing');
+    const [status, setStatus] = useState('Verifying');
 
     useEffect(() => {
         async function loadFace() {
@@ -119,17 +119,16 @@ const Index = () => {
         navigator.mediaDevices
             .getUserMedia({ video: true, audio: false })
             .then(stream => {
-                console.log(videoRef.current);
+                // console.log(videoRef.current);
                 const video = videoRef.current
                 video.srcObject = stream
                 video.play()
-                console.log(video.srcObject)
+                // console.log(video.srcObject)
             })
             .catch(error => {
                 console.error(error)
             });
 
-        setStatus('Verifying')
         intervalId.current = setInterval(async () => {
             const results = await faceapi
                 .detectAllFaces(videoRef.current)
@@ -139,12 +138,13 @@ const Index = () => {
             results.forEach(fd => {
                 const bestMatch = faceMatcher.current.findBestMatch(fd.descriptor)
                 console.log(bestMatch.toString())
+                console.log(status);
                 if (status != 'Passed' && bestMatch.toString().startsWith('Nong')) {
                     setStatus('Passed');
                     clearInterval(intervalId.current);
                 }
             })
-        })
+        }, 100)
     }
 
     const handleClose = () => {

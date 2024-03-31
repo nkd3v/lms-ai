@@ -37,7 +37,7 @@ const Router = [
       { path: '/course/new-exam', exact: true, element: <NewExam /> },
       { path: '/course/:courseId/assignment/:assignmentId', exact: true, element: <Assignment /> },
       { path: '/course/:courseId/exam/:examId', exact: true, element: <ExamAssignment /> },
-      { path: '/course/:courseId/proctor/:proctorId', exact: true, element: <Proctor /> },
+      { path: '/proctor/:examId/user/:userId', exact: true, element: <Proctor /> },
 
       { path: '/icons', exact: true, element: <Icons /> },
       { path: '/ui/typography', exact: true, element: <TypographyPage /> },

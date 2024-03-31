@@ -44,7 +44,7 @@ const getProctorActivityByExamIdAndUserIdHandler = (req, res) => __awaiter(void 
         const { examId, userId } = req.params;
         const activities = yield (0, proctorActivity_service_1.getProctorActivityByExamIdAndUserId)(examId, userId);
         if (!activities.length) {
-            return res.status(404).json({ message: 'No proctor activities found' });
+            return res.status(200).json([]);
         }
         res.json(activities);
     }

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.insertUser = exports.getUserByEmail = void 0;
+exports.getUserById = exports.insertUser = exports.getUserByEmail = void 0;
 const database_1 = __importDefault(require("../config/database"));
 function getUserByEmail(email) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -43,3 +43,22 @@ function insertUser(newUser) {
     });
 }
 exports.insertUser = insertUser;
+function getUserById(userId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const query = 'SELECT * FROM users WHERE id = $1';
+            const result = yield database_1.default.query(query, [userId]);
+            if (result.rows.length > 0) {
+                return result.rows[0]; // Return the first matching user
+            }
+            else {
+                return null; // User not found
+            }
+        }
+        catch (error) {
+            console.error('Error fetching user by ID:', error);
+            throw error; // Re-throw to allow for appropriate error handling
+        }
+    });
+}
+exports.getUserById = getUserById;

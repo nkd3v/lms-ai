@@ -35,7 +35,7 @@ export const getProctorActivityByExamIdAndUserIdHandler = async (req: Request, r
     const { examId, userId } = req.params;
     const activities = await getProctorActivityByExamIdAndUserId(examId, userId);
     if (!activities.length) {
-      return res.status(404).json({ message: 'No proctor activities found' });
+      return res.status(200).json([]);
     }
     res.json(activities);
   } catch (error) {

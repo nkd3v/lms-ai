@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Box, Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Typography } from '@mui/material';
 import { BehaviorContext } from 'src/contexts/BehaviorContext';
+import { useParams } from 'react-router';
 const faceapi = require('face-api.js');
 
 const questions = [
@@ -51,20 +52,146 @@ const Exam = () => {
     const videoRef = useRef(null);
     const faceMatcher = useRef(null);
     const faceIntervalId = useRef(null);
+    const screenRef = useRef(null);
+    const [started, setStarted] = useState(false);
     const [detectNoFace, setDetectNoFace] = useState(false);
     const [detectUnknownFace, setDetectUnknownFace] = useState(false);
     const [tabSwitching, setTabSwitching] = useState(false);
+    const { examId } = useParams();
+
+    async function uploadWebcamImage() {
+        const video = videoRef.current;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+
+        const dataUrl = canvas.toDataURL('image/jpeg'); // Adjust image format if needed
+        const imageFile = await fetch(dataUrl).then(res => res.blob());
+
+        const formData = new FormData();
+        formData.append('image', imageFile);
+
+        try {
+            const response = await fetch('http://localhost:3000/api/v1/file/upload', {
+                method: 'POST',
+                body: formData,
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                throw new Error('Image upload failed');
+            }
+
+            const responseData = await response.json(); // Parse JSON response 
+            const imageUrl = responseData.imageUrl;      // Extract imageUrl
+
+            console.log('Image uploaded successfully!');
+            return imageUrl; // Return the imageUrl
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            return null;
+        }
+    }
+
+    async function uploadScreenshotImage() {
+        const stream = screenRef.current;
+
+        const track = stream.getVideoTracks()[0];
+        const capture = new ImageCapture(track);
+
+        const bitmap = await capture.grabFrame();
+
+        const canvas = document.createElement("canvas");
+        canvas.width = bitmap.width;
+        canvas.height = bitmap.height;
+        canvas.getContext("bitmaprenderer").transferFromImageBitmap(bitmap);
+
+        const imageFile = await new Promise((res) => canvas.toBlob(res));
+
+        const formData = new FormData();
+        formData.append('image', imageFile);
+
+        try {
+            const response = await fetch('http://localhost:3000/api/v1/file/upload', {
+                method: 'POST',
+                body: formData,
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                throw new Error('Image upload failed');
+            }
+
+            const responseData = await response.json(); // Parse JSON response 
+            const imageUrl = responseData.imageUrl;      // Extract imageUrl
+
+            console.log('Image uploaded successfully!');
+            return imageUrl; // Return the imageUrl
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            return null;
+        }
+    }
 
     function updateBehaviorStatus() {
         console.log(detectNoFace, detectUnknownFace, tabSwitching);
-        if (detectNoFace) {
-            setBehaviorStatus('No face detected');
-        } else if (detectUnknownFace) {
-            setBehaviorStatus('Unknown face detected');
-        } else if (tabSwitching) {
-            setBehaviorStatus('Tab switching detected');
-        } else {
-            setBehaviorStatus('Normal');
+
+        if (started) {
+            let behaviorType;
+
+            if (detectNoFace) {
+                behaviorType = 'No Face';
+            } else if (detectUnknownFace) {
+                behaviorType = 'Unknown Face';
+            } else if (tabSwitching) {
+                behaviorType = 'Tab Switching';
+            } else {
+                behaviorType = 'Normal';
+            }
+
+            // Send the behavior update to the API
+            setBehaviorStatus(behaviorType);
+            if (behaviorType != 'Normal') {
+                sendBehaviorUpdate(examId, behaviorType);
+            }
+        }
+    }
+
+    async function sendBehaviorUpdate(examId, type) {
+        try {
+            let image_url;
+            await new Promise(resolve => setTimeout(resolve, 500)); 
+            if (type != 'Tab Switching') {
+                image_url = await uploadWebcamImage();
+            } else {
+                image_url = await uploadScreenshotImage();
+            }
+
+            const payload = {
+                exam_id: examId,
+                type: type,
+                description: `${type} detected`,
+                image_url
+            };
+
+            const response = await fetch('http://localhost:3000/api/v1/proctor/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload),
+                credentials: 'include' // Include credentials
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update behavior');
+            }
+
+            // Optionally handle the response if needed
+        } catch (error) {
+            console.error('Error updating behavior:', error);
         }
     }
 
@@ -111,15 +238,17 @@ const Exam = () => {
                     setDetectNoFace(true);
                 } else {
                     setDetectNoFace(false);
-                    results.forEach(fd => {
-                        const bestMatch = faceMatcher.current.findBestMatch(fd.descriptor)
-                        console.log(bestMatch.toString())
-                        if (!bestMatch.toString().startsWith('Nong')) {
-                            setDetectUnknownFace(true);
-                        } else {
-                            setDetectUnknownFace(false);
-                        }
-                    })
+                    if (faceMatcher.current != null) {
+                        results.forEach(fd => {
+                            const bestMatch = faceMatcher.current.findBestMatch(fd.descriptor)
+                            console.log(bestMatch.toString())
+                            if (!bestMatch.toString().startsWith('Nong')) {
+                                setDetectUnknownFace(true);
+                            } else {
+                                setDetectUnknownFace(false);
+                            }
+                        })
+                    }
                 }
             }, 1000)
         }
@@ -147,28 +276,26 @@ const Exam = () => {
 
         async function capture() {
             try {
-                const stream = await navigator.mediaDevices.getDisplayMedia();
-                const track = stream.getVideoTracks()[0];
-                const capture = new ImageCapture(track);
+                let stream;
+                while (stream == undefined) {
+                    try {
+                        stream = await navigator.mediaDevices.getDisplayMedia();
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
+                screenRef.current = stream;
+                setStarted(true);
 
-                const bitmap = await capture.grabFrame();
+                // // Save as downloadable file
+                // const url = window.URL.createObjectURL(blob);
+                // const link = document.createElement('a');
+                // link.href = url;
+                // link.download = 'screenshot.png'; // Set your desired filename
+                // link.click();
 
-                const canvas = document.createElement("canvas");
-                canvas.width = bitmap.width;
-                canvas.height = bitmap.height;
-                canvas.getContext("bitmaprenderer").transferFromImageBitmap(bitmap);
-
-                const blob = await new Promise((res) => canvas.toBlob(res));
-
-                // Save as downloadable file
-                const url = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = 'screenshot.png'; // Set your desired filename
-                link.click();
-
-                // Revoke the object URL after download (optional)
-                window.URL.revokeObjectURL(url);
+                // // Revoke the object URL after download (optional)
+                // window.URL.revokeObjectURL(url);
             } catch (err) {
                 console.error("Error capturing or saving screenshot:", err);
             }
@@ -200,7 +327,7 @@ const Exam = () => {
 
             </p>
 
-            {questions.map((q, index) => (
+            {started ? questions.map((q, index) => (
                 <Box marginY={3} key={index * 16 + 1}>
                     <FormControl key={index * 16 + 2}>
                         <FormLabel key={index * 16 + 3} sx={{ mb: 1 }}>{index + 1}. {q.question}</FormLabel>
@@ -216,11 +343,13 @@ const Exam = () => {
                         </RadioGroup>
                     </FormControl>
                 </Box>
-            ))}
-            
-            <Button href='/' variant='contained'>
-                Submit
-            </Button>
+            )) : <p>Please turn on full screen sharing</p>}
+
+            {started && (
+                <Button href='/proctor/1/user/1' variant='contained'>
+                    Submit
+                </Button>
+            )}
         </>
     );
 };

@@ -15,7 +15,7 @@ export const BehaviorProvider = ({ children }) => {
   useEffect(() => {
     // Simulate some behavior change after 5 seconds
     const timeoutId = setTimeout(() => {
-      setBehaviorStatus('active');
+      setBehaviorStatus('Normal');
     }, 5000);
 
     return () => clearTimeout(timeoutId);
