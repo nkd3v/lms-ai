@@ -14,15 +14,15 @@ const CourseStream = () => {
     <Grid container spacing={2}>
 
       <Grid item xs={12} display={"flex"} justifyContent={"flex-end"}>
-        <Link to='/course/1/new-exam' style={{ textDecoration: 'none' }}>
+        {/* <Link to='/course/1/new-exam' style={{ textDecoration: 'none' }}>
           <Button variant="contained" sx={{ mr: 1 }}>Create Exam</Button>
         </Link>
         <Link to='/course/1/new-assignment' style={{ textDecoration: 'none' }}>
           <Button variant="contained">Create Assignment</Button>
-        </Link>
-        {/* <Link to='.' style={{ textDecoration: 'none' }}>
-          <Button variant="contained">Attend Class</Button>
         </Link> */}
+        <Link to='.' style={{ textDecoration: 'none' }}>
+          <Button variant="contained">Attend Class</Button>
+        </Link>
       </Grid>
 
       <Grid item xs={12}>
