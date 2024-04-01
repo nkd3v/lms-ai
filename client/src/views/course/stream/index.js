@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 
 
 const CourseStream = () => {
+
   return (
     <Grid container spacing={2}>
 
@@ -19,6 +20,9 @@ const CourseStream = () => {
         <Link to='/course/1/new-assignment' style={{ textDecoration: 'none' }}>
           <Button variant="contained">Create Assignment</Button>
         </Link>
+        {/* <Link to='.' style={{ textDecoration: 'none' }}>
+          <Button variant="contained">Attend Class</Button>
+        </Link> */}
       </Grid>
 
       <Grid item xs={12}>

@@ -16,6 +16,7 @@
     "noImplicitThis": true,
     "noFallthroughCasesInSwitch": true,
     "suppressImplicitAnyIndexErrors": true,
+    "ignoreDeprecations": true,
     "strictNullChecks": true,
     "importHelpers": true,
     "skipLibCheck": true,

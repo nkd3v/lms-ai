@@ -29,12 +29,6 @@ const Menuitems = [
     icon: IconTypography,
     href: '/course/1',
   },
-  {
-    id: uniqueId(),
-    title: 'FPGA',
-    icon: IconCopy,
-    href: '/c/fpga',
-  },
 ];
 
 export default Menuitems;

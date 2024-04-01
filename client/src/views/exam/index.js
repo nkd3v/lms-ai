@@ -290,7 +290,7 @@ const Exam = () => {
 
     return (
         <>
-            <video id="vref" ref={videoRef} style={{ borderTopLeftRadius: 16, borderTopRightRadius: 16 }}></video>
+            <video hidden id="vref" ref={videoRef} style={{ borderTopLeftRadius: 16, borderTopRightRadius: 16 }}></video>
             {/* <video id="video" width="220" height="160" autoPlay></video> */}
             <Typography variant='h2'>
                 Exam 1

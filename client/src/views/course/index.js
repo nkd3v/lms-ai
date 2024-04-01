@@ -1,9 +1,12 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import StreamTab from './stream';
+import Attendance from './attendance';
+import Grade from './grade';
+import Cookies from 'js-cookie';
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -33,11 +36,13 @@ function a11yProps(index) {
 }
 
 export default function BasicTabs() {
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const [userId, setUserId] = useState(null);
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -46,6 +51,7 @@ export default function BasicTabs() {
           <Tab label="Stream" {...a11yProps(0)} />
           <Tab label="Classwork" {...a11yProps(1)} />
           <Tab label="People" {...a11yProps(2)} />
+          <Tab label="Attendance" {...a11yProps(3)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
@@ -56,6 +62,12 @@ export default function BasicTabs() {
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         Item Three
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={3}>
+        <Attendance></Attendance>
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={4}>
+        <Grade/>
       </CustomTabPanel>
     </Box>
   );

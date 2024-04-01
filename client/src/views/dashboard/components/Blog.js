@@ -52,7 +52,7 @@ const Blog = () => {
             {courses.map((course, index) => (
                 <Grid item sm={12} md={4} lg={3} key={index}>
                     <BlankCard>
-                        <Typography component={Link} to="/">
+                        <Typography component={Link} to="/course/1">
                             <img src={`https://picsum.photos/seed/${Math.floor(Math.random() * 200)}/300`} alt="img" width="100%" />
                         </Typography>
                         <CardContent sx={{ p: 3, pt: 2 }}>
