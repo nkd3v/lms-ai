@@ -9,6 +9,7 @@ import { examSubmissionRouter } from './exam_submission.route';
 import { userRouter } from './user.route';
 import { assignmentSubmissionRouter } from './assignment_submission.route';
 import { assignmentsRouter } from './assignment.route';
+import { attendanceRouter } from './attendance.route';
 
 const router = express.Router();
 
@@ -21,5 +22,6 @@ router.use('/users', jwtAuth, userRouter)
 router.use('/file', jwtAuth, FileRouter);
 router.use('/assignments/submissions', jwtAuth, assignmentSubmissionRouter);
 router.use('/assignments', jwtAuth, assignmentsRouter);
+router.use('/attendances', jwtAuth, attendanceRouter);
 
 export { router as indexRouter };
